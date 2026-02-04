@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="description" content="Digit Duel - A multiplayer number guessing game. Challenge friends or AI in this strategic deduction game.">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Digit Duel">
+    
+    <title>Digit Duel - Number Guessing Game</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <span class="logo-digit">🔢</span>
+                <h1>Digit Duel</h1>
+            </div>
+            <div class="splash-loader">
+                <div class="loader-bar"></div>
+            </div>
+            <p class="splash-text">Loading...</p>
+        </div>
+    </div>
+
+    <!-- Install Prompt -->
+    <div id="install-prompt" class="install-prompt hidden">
+        <div class="install-content">
+            <span class="install-icon">📲</span>
+            <div class="install-text">
+                <h3>Install Digit Duel</h3>
+                <p>Add to home screen for the best experience</p>
+            </div>
+            <button id="install-btn" class="btn btn-primary btn-sm">Install</button>
+            <button id="install-dismiss" class="btn-icon">✕</button>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container">
+        
+        <!-- Home Screen -->
+        <section id="home-screen" class="screen active">
+            <div class="screen-content">
+                <header class="home-header">
+                    <div class="logo-container">
+                        <div class="logo-glow"></div>
+                        <span class="logo-emoji">🎯</span>
+                        <h1 class="logo-text">Digit Duel</h1>
+                    </div>
+                    <p class="tagline">Crack the Code. Outsmart Your Opponent.</p>
+                </header>
+
+                <nav class="main-menu">
+                    <button class="menu-btn" data-mode="ai">
+                        <span class="menu-icon">🤖</span>
+                        <span class="menu-label">vs Computer</span>
+                        <span class="menu-desc">Challenge the AI</span>
+                    </button>
+                    <button class="menu-btn" data-mode="friend">
+                        <span class="menu-icon">👥</span>
+                        <span class="menu-label">vs Friend</span>
+                        <span class="menu-desc">Same Device Play</span>
+                    </button>
+                    <button class="menu-btn" data-mode="online" id="online-btn">
+                        <span class="menu-icon">🌐</span>
+                        <span class="menu-label">Online Match</span>
+                        <span class="menu-desc">Random Opponent</span>
+                        <span class="menu-badge">Coming Soon</span>
+                    </button>
+                </nav>
+
+                <div class="quick-stats glass-card">
+                    <div class="stat-item">
+                        <span class="stat-value" id="total-wins">0</span>
+                        <span class="stat-label">Wins</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="total-games">0</span>
+                        <span class="stat-label">Games</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="win-rate">0%</span>
+                        <span class="stat-label">Win Rate</span>
+                    </div>
+                </div>
+
+                <footer class="home-footer">
+                    <button class="footer-btn" id="how-to-play-btn">
+                        <span>❓</span> How to Play
+                    </button>
+                    <button class="footer-btn" id="settings-btn">
+                        <span>⚙️</span> Settings
+                    </button>
+                </footer>
+            </div>
+        </section>
+
+        <!-- Game Setup Screen -->
+        <section id="setup-screen" class="screen">
+            <div class="screen-content">
+                <header class="screen-header">
+                    <button class="back-btn" data-target="home-screen">←</button>
+                    <h2>Game Setup</h2>
+                    <div class="header-spacer"></div>
+                </header>
+
+                <div class="setup-form">
+                    <div class="form-group">
+                        <label class="form-label">Number of Digits</label>
+                        <div class="digit-selector">
+                            <button class="digit-btn" data-digits="3">3</button>
+                            <button class="digit-btn" data-digits="4">4</button>
+                            <button class="digit-btn active" data-digits="5">5</button>
+                            <button class="digit-btn" data-digits="6">6</button>
+                            <button class="digit-btn" data-digits="7">7</button>
+                            <button class="digit-btn" data-digits="8">8</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="difficulty-group">
+                        <label class="form-label">AI Difficulty</label>
+                        <div class="difficulty-selector">
+                            <button class="difficulty-btn" data-difficulty="easy">
+                                <span class="diff-icon">😊</span>
+                                <span class="diff-name">Easy</span>
+                                <span class="diff-desc">Random guesses</span>
+                            </button>
+                            <button class="difficulty-btn active" data-difficulty="medium">
+                                <span class="diff-icon">🧠</span>
+                                <span class="diff-name">Medium</span>
+                                <span class="diff-desc">Smart strategy</span>
+                            </button>
+                            <button class="difficulty-btn" data-difficulty="hard">
+                                <span class="diff-icon">🔥</span>
+                                <span class="diff-name">Hard</span>
+                                <span class="diff-desc">Near optimal</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Allow Duplicate Digits</label>
+                        <div class="toggle-container">
+                            <button class="toggle-btn active" data-duplicates="true">Yes</button>
+                            <button class="toggle-btn" data-duplicates="false">No</button>
+                        </div>
+                    </div>
+
+                    <div class="time-info glass-card">
+                        <span class="time-icon">⏱️</span>
+                        <div class="time-details">
+                            <span class="time-label">Game Time</span>
+                            <span class="time-value" id="calculated-time">10 minutes</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg btn-glow" id="start-game-btn">
+                        Start Game
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Secret Number Entry Screen -->
+        <section id="secret-screen" class="screen">
+            <div class="screen-content">
+                <header class="screen-header">
+                    <button class="back-btn" data-target="setup-screen">←</button>
+                    <h2 id="secret-title">Enter Your Secret</h2>
+                    <div class="header-spacer"></div>
+                </header>
+
+                <div class="secret-form">
+                    <p class="secret-instruction">Choose a <span id="secret-digit-count">5</span>-digit secret number for your opponent to guess.</p>
+                    
+                    <div class="secret-display" id="secret-display">
+                        <span class="secret-digit">_</span>
+                        <span class="secret-digit">_</span>
+                        <span class="secret-digit">_</span>
+                        <span class="secret-digit">_</span>
+                        <span class="secret-digit">_</span>
+                    </div>
+
+                    <div class="numpad">
+                        <button class="numpad-btn" data-num="1">1</button>
+                        <button class="numpad-btn" data-num="2">2</button>
+                        <button class="numpad-btn" data-num="3">3</button>
+                        <button class="numpad-btn" data-num="4">4</button>
+                        <button class="numpad-btn" data-num="5">5</button>
+                        <button class="numpad-btn" data-num="6">6</button>
+                        <button class="numpad-btn" data-num="7">7</button>
+                        <button class="numpad-btn" data-num="8">8</button>
+                        <button class="numpad-btn" data-num="9">9</button>
+                        <button class="numpad-btn numpad-clear" data-num="clear">⌫</button>
+                        <button class="numpad-btn" data-num="0">0</button>
+                        <button class="numpad-btn numpad-confirm" data-num="confirm" disabled>✓</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Game Screen -->
+        <section id="game-screen" class="screen">
+            <div class="screen-content game-layout">
+                <!-- Game Header -->
+                <header class="game-header">
+                    <div class="player-info player-self">
+                        <div class="player-avatar">👤</div>
+                        <div class="player-details">
+                            <span class="player-name">You</span>
+                            <span class="player-guesses"><span id="self-guesses">0</span>/10</span>
+                        </div>
+                    </div>
+                    <div class="game-timer" id="game-timer">
+                        <span class="timer-icon">⏱️</span>
+                        <span class="timer-value">10:00</span>
+                    </div>
+                    <div class="player-info player-opponent">
+                        <div class="player-details">
+                            <span class="player-name" id="opponent-name">AI</span>
+                            <span class="player-guesses"><span id="opponent-guesses">0</span>/10</span>
+                        </div>
+                        <div class="player-avatar" id="opponent-avatar">🤖</div>
+                    </div>
+                </header>
+
+                <!-- Turn Indicator -->
+                <div class="turn-indicator" id="turn-indicator">
+                    <span class="turn-text">Your Turn</span>
+                </div>
+
+                <!-- Guess History -->
+                <div class="guess-history" id="guess-history">
+                    <div class="history-empty">
+                        <span>🎯</span>
+                        <p>Make your first guess!</p>
+                    </div>
+                </div>
+
+                <!-- Guess Input -->
+                <div class="guess-input-container" id="guess-input-container">
+                    <div class="guess-display" id="guess-display"></div>
+                    <div class="numpad compact">
+                        <button class="numpad-btn" data-num="1">1</button>
+                        <button class="numpad-btn" data-num="2">2</button>
+                        <button class="numpad-btn" data-num="3">3</button>
+                        <button class="numpad-btn" data-num="4">4</button>
+                        <button class="numpad-btn" data-num="5">5</button>
+                        <button class="numpad-btn" data-num="6">6</button>
+                        <button class="numpad-btn" data-num="7">7</button>
+                        <button class="numpad-btn" data-num="8">8</button>
+                        <button class="numpad-btn" data-num="9">9</button>
+                        <button class="numpad-btn numpad-clear" data-num="clear">⌫</button>
+                        <button class="numpad-btn" data-num="0">0</button>
+                        <button class="numpad-btn numpad-confirm" data-num="submit" disabled>➤</button>
+                    </div>
+                </div>
+
+                <!-- Chat Toggle -->
+                <button class="chat-toggle" id="chat-toggle">
+                    💬 <span class="chat-badge hidden">1</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Chat Panel -->
+        <aside id="chat-panel" class="chat-panel">
+            <header class="chat-header">
+                <h3>Chat</h3>
+                <button class="chat-close" id="chat-close">✕</button>
+            </header>
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-message system">
+                    <p>Game started! Good luck! 🍀</p>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" id="chat-input" placeholder="Type a message..." maxlength="200">
+                <button class="chat-send" id="chat-send">➤</button>
+            </div>
+        </aside>
+
+        <!-- Game Over Modal -->
+        <div id="game-over-modal" class="modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content game-over-content">
+                <div class="game-over-icon" id="game-over-icon">🏆</div>
+                <h2 class="game-over-title" id="game-over-title">You Win!</h2>
+                <p class="game-over-message" id="game-over-message">You guessed the number correctly!</p>
+                
+                <div class="game-over-stats">
+                    <div class="go-stat">
+                        <span class="go-stat-label">Your Secret</span>
+                        <span class="go-stat-value" id="reveal-your-secret">12345</span>
+                    </div>
+                    <div class="go-stat">
+                        <span class="go-stat-label">Opponent's Secret</span>
+                        <span class="go-stat-value" id="reveal-opponent-secret">67890</span>
+                    </div>
+                    <div class="go-stat">
+                        <span class="go-stat-label">Guesses Used</span>
+                        <span class="go-stat-value" id="reveal-guesses">5</span>
+                    </div>
+                </div>
+
+                <div class="game-over-actions">
+                    <button class="btn btn-primary btn-lg" id="play-again-btn">Play Again</button>
+                    <button class="btn btn-secondary" id="go-home-btn">Home</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- How to Play Modal -->
+        <div id="how-to-play-modal" class="modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content how-to-play-content">
+                <header class="modal-header">
+                    <h2>How to Play</h2>
+                    <button class="modal-close" data-modal="how-to-play-modal">✕</button>
+                </header>
+                <div class="modal-body">
+                    <div class="rule-section">
+                        <h3>🎯 Objective</h3>
+                        <p>Guess your opponent's secret number before they guess yours!</p>
+                    </div>
+                    <div class="rule-section">
+                        <h3>🔢 Setup</h3>
+                        <p>Each player picks a secret number (3-10 digits). Your opponent doesn't see it.</p>
+                    </div>
+                    <div class="rule-section">
+                        <h3>🔄 Turns</h3>
+                        <p>Players take turns guessing. You can only guess after your opponent's turn.</p>
+                    </div>
+                    <div class="rule-section">
+                        <h3>💡 Feedback</h3>
+                        <ul>
+                            <li><strong>"X digits correct"</strong> - X digits exist in the secret (position doesn't matter)</li>
+                            <li><strong>"All digits correct but wrong arrangement"</strong> - Right digits, wrong order</li>
+                            <li><strong>"No correct digits"</strong> - None of your digits are in the secret</li>
+                        </ul>
+                    </div>
+                    <div class="rule-section">
+                        <h3>🏆 Winning</h3>
+                        <p>First to guess correctly wins! Each player has 10 guesses max.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content settings-content">
+                <header class="modal-header">
+                    <h2>Settings</h2>
+                    <button class="modal-close" data-modal="settings-modal">✕</button>
+                </header>
+                <div class="modal-body">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-label">Sound Effects</span>
+                            <span class="setting-desc">Game sounds and notifications</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="sound-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-label">Vibration</span>
+                            <span class="setting-desc">Haptic feedback on actions</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="vibration-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-label">Dark Mode</span>
+                            <span class="setting-desc">Use dark theme</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="dark-mode-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <button class="btn btn-danger btn-sm" id="reset-stats-btn">Reset Statistics</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Offline Indicator -->
+    <div id="offline-indicator" class="offline-indicator hidden">
+        <span>📴</span> You're offline
+    </div>
+
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>
